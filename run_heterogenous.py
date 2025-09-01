@@ -22,7 +22,7 @@ class HeteSoil_Func():
         self.i = args.i
         self.restart = 1
         # self.num_scan = 20
-        self.num_scan = 180
+        self.num_scan = 200
 
         self.resol = 0.001
         self.time_window = 40e-9
@@ -355,16 +355,14 @@ geometry_view: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} 0.
             f.close()
         try:
             api(self.input, 
-                # n=self.num_scan - self.restart + 1, 
-                n=40,
+                n=self.num_scan - self.restart + 1,
                 gpu=[0], 
                 restart=self.restart,
                 geometry_only=False, geometry_fixed=False)
         except Exception as e:
                 api(self.input, 
-                # n=self.num_scan - self.restart + 1,
-                n=40,  
-                # gpu=[0], 
+                n=self.num_scan - self.restart + 1,  
+                gpu=[0], 
                 restart=self.restart,
                 geometry_only=False, geometry_fixed=False)
         try:
