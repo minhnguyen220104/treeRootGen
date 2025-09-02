@@ -25,7 +25,7 @@ class HeteSoil_Func():
         self.num_scan = 190
 
         self.resol = 0.001
-        self.time_window = 40e-9
+        self.time_window = 30e-9
         self.square_size = args.square_size
         self.air_thickness = args.air_thickness
         # self.wall_height = args.wall_height

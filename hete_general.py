@@ -130,8 +130,8 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness, shape
     # Apply clearance from air boundaries (shrink the allowed box)
     row_min = box_start + objair_gap
     row_max = box_end   - objair_gap
-    col_min = col_min_raw + objair_gap
-    col_max = col_max_raw - objair_gap
+    col_min = col_min_raw
+    col_max = col_max_raw
 
     if row_min >= row_max or col_min >= col_max:
         raise ValueError("Not enough room inside the box after applying objair_gap.")
@@ -268,9 +268,9 @@ if __name__ == '__main__':
     args.n = args.end + 1 - args.start
 
     for i in range(args.n):
-        square_size = 200
+        square_size = 150
         # wall_thickness = random.randint(15, 30)
-        air_thickness = 100
+        air_thickness = 50
 
         # Define wall materials with permittivity and conductivity
         box_materials = {
