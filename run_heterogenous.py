@@ -355,16 +355,16 @@ Geometry objects read
             f.close()
         try:
             api(self.input, 
-                #n=self.num_scan - self.restart + 1,
-                #gpu=[0],
-                n=1,
+                n=self.num_scan - self.restart + 1,
+                gpu=[0],
+                #n=1,
                 restart=self.restart,
                 geometry_only=True, geometry_fixed=False)
         except Exception as e:
                 api(self.input, 
-                #n=self.num_scan - self.restart + 1,  
-                #gpu=[0],
-                n=1,
+                n=self.num_scan - self.restart + 1,  
+                gpu=[0],
+                #n=1,
                 restart=self.restart,
                 geometry_only=True, geometry_fixed=False)
         try:
