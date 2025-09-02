@@ -130,8 +130,8 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness, shape
     # Apply clearance from air boundaries (shrink the allowed box)
     row_min = box_start + objair_gap
     row_max = box_end   - objair_gap
-    col_min = col_min_raw
-    col_max = col_max_raw
+    col_min = col_min_raw + 50
+    col_max = col_max_raw - 50
 
     if row_min >= row_max or col_min >= col_max:
         raise ValueError("Not enough room inside the box after applying objair_gap.")
@@ -245,9 +245,7 @@ def save_parameters(filename, **params):
         all_params = list(existing_data['params'])
     else:
         all_params = []
-
     all_params.append(params)
-
     with open(filename, 'wb') as f:
         np.savez(f, params=all_params)
 
@@ -268,9 +266,9 @@ if __name__ == '__main__':
     args.n = args.end + 1 - args.start
 
     for i in range(args.n):
-        square_size = 150
+        square_size = 300
         # wall_thickness = random.randint(15, 30)
-        air_thickness = 50
+        air_thickness = 150
 
         # Define wall materials with permittivity and conductivity
         box_materials = {
