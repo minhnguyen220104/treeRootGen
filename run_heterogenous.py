@@ -359,14 +359,14 @@ Geometry objects read
                 gpu=[0],
                 #n=1,
                 restart=self.restart,
-                geometry_only=True, geometry_fixed=False)
+                geometry_only=False, geometry_fixed=False)
         except Exception as e:
                 api(self.input, 
                 n=self.num_scan - self.restart + 1,  
                 gpu=[0],
                 #n=1,
                 restart=self.restart,
-                geometry_only=True, geometry_fixed=False)
+                geometry_only=False, geometry_fixed=False)
         try:
         
             merge_files(str(self.input.replace('.in','')), True)
