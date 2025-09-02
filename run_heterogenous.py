@@ -346,7 +346,7 @@ Geometry objects read
 #fractal_box: {pml} {pml} 0 {domain_2d[0] - pml:.3f} {self.square_size-self.air_thickness+0.05:.3f} 0.001 1.5 1 1 1 20 hete_soil my_fractal_box {fractal_box_seed}
 #geometry_objects_read: {pml:.3f} {pml:.3f} {0:.3f} Geometry_ge/root_2d.h5 Root_materials.txt
 #geometry_objects_write: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} Roots 
-#geometry_view: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} 0.001 0.001 0.001 HeteRoot{self.i} n
+geometry_view: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} 0.001 0.001 0.001 HeteRoot{self.i} n
 
         '''
 
@@ -358,13 +358,13 @@ Geometry objects read
                 n=self.num_scan - self.restart + 1,
                 gpu=[0],
                 restart=self.restart,
-                geometry_only=True, geometry_fixed=False)
+                geometry_only=False, geometry_fixed=False)
         except Exception as e:
                 api(self.input, 
                 n=self.num_scan - self.restart + 1,  
                 gpu=[0],
                 restart=self.restart,
-                geometry_only=True, geometry_fixed=False)
+                geometry_only=False, geometry_fixed=False)
         try:
         
             merge_files(str(self.input.replace('.in','')), True)
