@@ -22,7 +22,7 @@ class HeteSoil_Func():
         self.i = args.i
         self.restart = 1
         # self.num_scan = 20
-        self.num_scan = 145
+        self.num_scan = 140
 
         self.resol = 0.001
         self.time_window = 30e-9
