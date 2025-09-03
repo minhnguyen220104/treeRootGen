@@ -1,1 +1,1 @@
-#material: 26.301 0.000602 1 0 Object0
+#material: 25.076 0.000548 1 0 Object0

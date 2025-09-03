@@ -112,23 +112,31 @@ import numpy as np
 import random
 from scipy.ndimage import binary_dilation
 
-def add_shape(i, geometry, square_size, box_start, box_end, air_thickness, shape="circle",objair_gap=25, min_spacing=10, max_tries=400):
+def add_shape(i, geometry, square_size, box_start, box_end, air_thickness,
+              shape="circle", objair_gap=25, min_spacing=10, max_tries=400,
+              fixed_row=True):
     """
     Place one shape into the soil box with:
       - no overlap,
       - at least `objair_gap` from air,
-      - at least `min_spacing` pixels from any *existing* shape.
+      - at least `min_spacing` pixels from any *existing* shape,
+      - Shapes aligned at the same row if fixed_row=True.
+
     Labels:
       Air=0, Soil=1, Shapes>=2 (label = 2+i)
+
+    Args:
+      fixed_row (bool): 
+        True  -> all shapes share the same row (randomly chosen once per run).
+        False -> each shape gets its own random row.
     """
 
     # Soil box columns from how create_geometry() filled it:
-    # geometry[box_start:box_end, square_size-box_end:box_end] = 1
     col_min_raw = square_size - box_end
     col_max_raw = box_end
 
-    # Apply clearance from air boundaries (shrink the allowed box)
-    row_min = box_start + objair_gap
+    # Apply clearance from air boundaries
+    row_min = box_start + 2*objair_gap
     row_max = box_end   - objair_gap
     col_min = col_min_raw + 50
     col_max = col_max_raw - 50
@@ -141,7 +149,19 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness, shape
     rect_height = random.randint(20, 30)
     label = int(i) + 2
 
-    # --- Build a circular structuring element for spacing ---
+    # --- Adaptive spacing ---
+    obj_diag = int(np.hypot(rect_width, rect_height))
+    min_spacing = max(min_spacing, obj_diag // 2)
+
+    # --- Choose row ---
+    if fixed_row:
+        if not hasattr(add_shape, "_shared_row") or add_shape._shared_row is None:
+            add_shape._shared_row = random.randint(row_min, row_max - 1)
+        shared_row = add_shape._shared_row
+    else:
+        shared_row = random.randint(row_min, row_max - 1)
+
+    # --- Build structuring element for spacing ---
     def disk(radius):
         r = int(radius)
         y, x = np.ogrid[-r:r+1, -r:r+1]
@@ -149,15 +169,16 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness, shape
 
     selem = disk(max(1, min_spacing))
 
-    # Anything not soil (air=0 or shapes>=2) is "blocked"
     blocked = (geometry != 1)
-    # Dilate blocked region to keep a spacing buffer from existing shapes/air
     blocked_dilated = binary_dilation(blocked, structure=selem)
 
-    # Candidate mask generators
+    # Helpers
+    def clamp(v, lo, hi):
+        return max(lo, min(hi, v))
+
     def sample_circle_mask():
         r = min(rect_width, rect_height) // 2
-        cy = random.randint(row_min + r, row_max - 1 - r)
+        cy = clamp(shared_row, row_min + r, row_max - 1 - r)
         cx = random.randint(col_min + r, col_max - 1 - r)
         yy, xx = np.ogrid[-r:r+1, -r:r+1]
         circle = (yy*yy + xx*xx) <= (r*r)
@@ -167,15 +188,16 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness, shape
         return rr, cc
 
     def sample_rectangle_mask():
-        top  = random.randint(row_min, row_max - rect_height)
+        center = clamp(shared_row, row_min, row_max - 1)
+        top = clamp(center - rect_height // 2, row_min, row_max - rect_height)
         left = random.randint(col_min, col_max - rect_width)
         rr, cc = np.mgrid[top:top+rect_height, left:left+rect_width]
-        rr = rr.ravel()
-        cc = cc.ravel()
-        return rr, cc
+        return rr.ravel(), cc.ravel()
 
-    # Feasibility check: must be on soil (==1), not in dilated blocked area
     def can_place(rr, cc):
+        H, W = geometry.shape
+        if (rr.min() < 0) or (cc.min() < 0) or (rr.max() >= H) or (cc.max() >= W):
+            return False
         return np.all(geometry[rr, cc] == 1) and np.all(~blocked_dilated[rr, cc])
 
     # Try to place
@@ -184,7 +206,7 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness, shape
             rr, cc = sample_circle_mask()
         elif shape == "rectangle":
             rr, cc = sample_rectangle_mask()
-        else:  # default to circle if unknown
+        else:
             rr, cc = sample_circle_mask()
 
         if can_place(rr, cc):
@@ -192,9 +214,8 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness, shape
             obj_mat, obj_type, eps_obj, sig_obj = get_material()
             return obj_mat, obj_type, eps_obj, sig_obj, shape, geometry
 
-    raise RuntimeError(
-        "Could not place the shape with the requested spacing; try reducing min_spacing/objair_gap or sizes."
-    )
+    raise RuntimeError("Could not place the shape with the requested spacing.")
+
 
 
 def visualize_geometry(geometry, box_color, air_color, r1_color, r2_color, r3_color):
@@ -308,6 +329,8 @@ if __name__ == '__main__':
 
         geometry, box_start, box_end = create_geometry(square_size, square_size, air_thickness)
 
+        add_shape._shared_row = None
+
         save_base(base, geometry, square_size, box_color, air_color)
 
         per_obj_arr = []
@@ -316,7 +339,7 @@ if __name__ == '__main__':
         mat_arr = []
         num_objects = random.randint(1, 3)
         for j in range(num_objects):
-            obj_mat,obj_type,per_obj, con_obj, shape, geometry = add_shape(j, geometry, square_size, box_start, box_end, air_thickness)
+            obj_mat,obj_type,per_obj, con_obj, shape, geometry = add_shape(j, geometry, square_size, box_start, box_end, air_thickness, fixed_row=True)
             per_obj_arr.append(per_obj)
             shape_arr.append(shape)
             con_arr.append(con_obj)

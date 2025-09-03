@@ -21,7 +21,7 @@ def view_bscan(raw, output, mode = ['rxs','rx1','Ez']):
     rxcomponent = 'Ez'
     # print(data.shape)
     # data = process_br(data[:,:])
-    data = data[2000:,:]
+    data = data[1000:4000,:]
     data = process_br(data)
     from scipy.ndimage import gaussian_filter
     # data = gaussian_filter(data, sigma)
@@ -40,6 +40,6 @@ def view_bscan(raw, output, mode = ['rxs','rx1','Ez']):
     plt.show()
 
 if __name__ == "__main__":
-    raw = './Input_ge/Roots/Roots160_merged.out'
-    output = './Output_ge/Roots160.out'
+    raw = './Input_ge/Roots/Roots5_merged.out'
+    output = './Output_ge/Roots5.out'
     view_bscan(raw = raw , output= output)

@@ -435,7 +435,7 @@ if __name__ == "__main__":
     # data = np.load('Geometry_ge/4w_multi_1000_1999.npz', allow_pickle=True)
     # data = np.load('Geometry_ge/4w_multi_0_4999.npz', allow_pickle=True)
     # data = np.load('Geometry_ge/4w_multi_5000_9999.npz', allow_pickle=True)
-    data = np.load('Geometry_ge/root_hete_0_300.npz', allow_pickle=True)
+    data = np.load('Geometry_ge/root_hete_0_200.npz', allow_pickle=True)
     datasetvalue = 0
     args = parser.parse_args()
     for i in range(args.start, args.end):
