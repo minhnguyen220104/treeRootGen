@@ -22,7 +22,8 @@ class HeteSoil_Func():
         self.i = args.i
         self.restart = 1
         # self.num_scan = 20
-        self.num_scan = 60
+        self.num_scan = 95
+        self.fractal_box_seed = args.fractal_box_seed
 
         self.resol = 0.005
         self.time_window = 15e-9
@@ -168,128 +169,13 @@ class HeteSoil_Func():
             file.attrs['dx_dy_dz'] = (0.005, 0.005, 0.005)
             file.close()
 
-#     def run_base(self):
-
-#         # Run gprMax
-#         self.input = './Input_ge/Base/Base{}.in'.format(self.i)
-
-#         pml_cells = 10
-#         pml = self.resol * pml_cells
-#         src_to_pml = 0.04
-
-#         sharp_domain = self.square_size + 2* self.src_to_rx, self.square_size + 2* self.src_to_rx
-#         domain_2d = [
-#             float(sharp_domain[0] + 2 * pml + src_to_pml + 0.2), 
-#             float(sharp_domain[1] + 2 * pml + src_to_pml + 0.2), 
-#             0.001
-#         ]
-
-#         # Preprocess geometry
-
-#         try:
-#             with open('{}materials.txt'.format('Base_'), "w") as file:
-#                 file.write('#material: {} {} 1 0 box\n'.format(self.box_permittivity, self.box_conductivity))
-#             self.preprocess(self.basefile)
-#         except Exception as e:
-#             print(e)
-
-#         src_position = [pml + src_to_pml + 0.2, 
-#                         self.air_thickness - self.src_to_box, 
-#                         0]
-#         rx_position = [pml + src_to_pml + 0.2, 
-#                        self.air_thickness - self.src_to_box, 
-#                        0]        
-        
-
-#         src_steps = [(self.square_size-0.2)/ self.num_scan, 0, 0]
-#         # print(src_steps)
-#         config = f'''
-
-# #title: HeteSoil Box Object Imaging
-
-# Configuration
-# #domain: {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f}
-# #dx_dy_dz: 0.001 0.001 0.001
-# #time_window: {self.time_window}
-
-# #pml_cells: {pml_cells} {pml_cells} 0 {pml_cells} {pml_cells} 0
-
-# Source - Receiver - Waveform
-# #waveform: ricker 1 2e9 my_wave
-
-# #hertzian_dipole: z {src_position[0]:.3f} {src_position[1]:.3f} {src_position[2]:.3f} my_wave 
-# #rx: {rx_position[0]:.3f} {rx_position[1]:.3f} {rx_position[2]:.3f}
-# #src_steps: {src_steps[0]:.3f} 0 0
-# #rx_steps: {src_steps[0]:.3f} 0 0
-
-# Geometry objects read
-
-# #geometry_objects_read: {pml + src_to_pml + 0.1:.3f} {pml+ src_to_pml + 0.2:.3f} {0:.3f} Geometry_ge/geometry_2d.h5 Base_materials.txt
-# geometry_objects_write: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} Base 
-# geometry_view: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} 0.001 0.001 0.001 Base n
-
-#         '''
-
-#         with open(self.input, 'w') as f:
-#             f.write(config)
-#             f.close()
-#         try:
-#             api(self.input, 
-#                 n=self.num_scan - self.restart + 1,
-#                 gpu=[0], 
-#                 restart=self.restart,
-#                 geometry_only=True, geometry_fixed=False)
-#         except Exception as e:
-#                 api(self.input,  
-#                 n=self.num_scan - self.restart + 1,
-#                 # gpu=[0], 
-#                 restart=self.restart,
-#                 geometry_only=True, geometry_fixed=False)
-        
-#         try:
-#             merge_files(str(self.input.replace('.in','')), True)
-#             output_file =str(self.input.replace('.in',''))+ '_merged.out'
-#             base_output_file = f'./Output_ge/Base/Base{self.i}.out'
-#             dt = 0
-
-#             with h5py.File(output_file, 'r') as f1:
-#                 data1 = f1['rxs']['rx1']['Ez'][()]
-#                 dt = f1.attrs['dt']
-#                 f1.close()
-
-#             rxnumber = 1
-#             rxcomponent = 'Ez'
-#             plt = mpl_plot_Bscan("merged_output_data", data1, dt, rxnumber,rxcomponent)
-            
-#             fig_width = 15
-#             fig_height = 15
-
-#             fig, ax = plt.subplots(figsize=(fig_width, fig_height))
-
-#             plt.imshow(data1, cmap='gray', aspect='auto')
-#             plt.axis('off')
-#             ax.margins(0, 0)  # Remove any extra margins or padding
-#             fig.tight_layout(pad=0)  # Remove any extra padding
-
-
-#             with h5py.File(base_output_file, 'w') as f_out:
-#                 f_out.attrs['dt'] = dt  # Set the time step attribute
-#                 f_out.create_dataset('rxs/rx1/Ez', data=data1)
-#                 f_out.close()
-#             plt.savefig(f'./BaseImg_ge/Base{self.i}' + ".png")
-#             plt.close()
-#         except Exception as e:
-#             print(e)
-
-
-    def run_2D(self):
+    def run_base(self):
 
         # Run gprMax
-        self.input = './Input_ge/Roots/Roots{}.in'.format(self.i)
+        self.input = './Input_ge/HeteSoil/HeteSoil{}.in'.format(self.i)
         pml_cells = 20
         pml = self.resol * pml_cells
         src_to_pml = 0.05
-        fractal_box_seed = random.randint(0,100)
 
         sharp_domain = self.square_size, self.square_size
         domain_2d = [
@@ -298,23 +184,18 @@ class HeteSoil_Func():
             0.005
         ]
 
-
         # Preprocess geometry
-
         try:
             with open('{}materials.txt'.format('Obj_'), "w") as file:
-                file.write('#material: {} {} 1 0 box\n'.format(self.box_permittivity, self.box_conductivity))
-            with open('{}materials.txt'.format('Root_'), "w") as file:
-                for i in range(len(self.object_permittivity)):
-                    file.write('#material: {} {} 1 0 Object{}\n'.format(self.object_permittivity[i],self.object_conductivity[i],i))          
-                self.preprocess(self.geofile)
+                file.write('#material: {} {} 1 0 box\n'.format(self.box_permittivity, self.box_conductivity))         
+            self.preprocess(self.geofile)
         except Exception as e:
             print(e)
 
-        src_position = [pml + src_to_pml, 
+        src_position = [src_to_pml + pml + src_to_pml, 
                         self.square_size - self.air_thickness + self.src_to_box, 
                         0]
-        rx_position = [pml + src_to_pml + self.src_to_rx, 
+        rx_position = [src_to_pml + pml + src_to_pml + self.src_to_rx, 
                        self.square_size - self.air_thickness + self.src_to_box, 
                        0]        
         
@@ -343,7 +224,149 @@ Source - Receiver - Waveform
 Geometry objects read
 
 #geometry_objects_read: {pml:.3f} {pml:.3f} {0:.3f} Geometry_ge/geometry_2d.h5 Obj_materials.txt
-#fractal_box: {pml:.3f} {pml:.3f} 0 {domain_2d[0] - pml:.3f} {self.square_size-self.air_thickness+pml:.3f} 0.005 1.5 1 1 1 20 hete_soil my_fractal_box {fractal_box_seed}
+#fractal_box: {pml:.3f} {pml:.3f} 0 {domain_2d[0] - pml:.3f} {self.square_size-self.air_thickness+pml:.3f} 0.005 1.5 1 1 1 20 hete_soil my_fractal_box {self.fractal_box_seed}
+geometry_objects_read: {pml:.3f} {pml:.3f} {0:.3f} Geometry_ge/root_2d.h5 Root_materials.txt
+#geometry_objects_write: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} Roots 
+#geometry_view: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} 0.005 0.005 0.005 HeteSoil{self.i} n
+
+        '''
+
+        with open(self.input, 'w') as f:
+            f.write(config)
+            f.close()
+        try:
+            api(self.input, 
+                #n=self.num_scan - self.restart + 1,
+                #gpu=[0],
+                n=1,
+                restart=self.restart,
+                geometry_only=True, geometry_fixed=False)
+        except Exception as e:
+                api(self.input, 
+                #n=self.num_scan - self.restart + 1,  
+                #gpu=[0],
+                n=1,
+                restart=self.restart,
+                geometry_only=True, geometry_fixed=False)
+        try:
+        
+            merge_files(str(self.input.replace('.in','')), True)
+            output_file =str(self.input.replace('.in',''))+ '_merged.out'
+            uncleaned_output_file = f'./Output_ge/HeteSoil/HeteSoil{self.i}.out'
+            dt = 0
+
+            with h5py.File(output_file, 'r') as f1:
+                data1 = f1['rxs']['rx1']['Ez'][()]
+                dt = f1.attrs['dt']
+                f1.close()
+
+            # with h5py.File(f'./Output_ge/Base/Base{self.i}.out', 'r') as f1:
+            #     data_source = f1['rxs']['rx1']['Ez'][()]
+
+            with h5py.File(uncleaned_output_file, 'w') as f_out:
+                f_out.attrs['dt'] = dt  # Set the time step attribute
+                f_out.create_dataset('rxs/rx1/Ez', data=data1)
+                f_out.close()
+            rxnumber = 1
+            rxcomponent = 'Ez'
+            plt = mpl_plot_Bscan("merged_output_data", data1, dt, rxnumber,rxcomponent)
+            fig_width = 15
+            fig_height = 15
+            fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+            plt.imshow(data1, cmap='gray', aspect='auto')
+            plt.axis('off')
+            ax.margins(0, 0)  # Remove any extra margins or padding
+            fig.tight_layout(pad=0)  # Remove any extra padding
+            plt.savefig(f'./HeteSoil_ge/HeteSoil{self.i}' + ".png")
+            plt.close()
+            # data1 = np.subtract(data1, data_source)
+
+            # with h5py.File(output_file, 'w') as f_out:
+            #     f_out.attrs['dt'] = dt  # Set the time step attribute
+            #     f_out.create_dataset('rxs/rx1/Ez', data=data1)
+
+            # # Draw data with normal plot
+            # rxnumber = 1
+            # rxcomponent = 'Ez'
+            # plt = mpl_plot_Bscan("merged_output_data", data1, dt, rxnumber,rxcomponent)
+            
+            # fig_width = 15
+            # fig_height = 15
+
+            # fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+
+            # plt.imshow(data1, cmap='gray', aspect='auto')
+            # plt.axis('off')
+            # ax.margins(0, 0)  # Remove any extra margins or padding
+            # fig.tight_layout(pad=0)  # Remove any extra padding
+
+            # os.rename(output_file, f'./Output_ge/Object/Obj{self.i}.out')
+            # plt.savefig(f'./ObjImg_ge/Obj{self.i}' + ".png")
+        except Exception as e:
+            print(e)
+
+
+    def run_2D(self):
+
+        # Run gprMax
+        self.input = './Input_ge/Roots/Roots{}.in'.format(self.i)
+        pml_cells = 20
+        pml = self.resol * pml_cells
+        src_to_pml = 0.05
+
+        sharp_domain = self.square_size, self.square_size
+        domain_2d = [
+            float(sharp_domain[0] + 2 * pml), 
+            float(sharp_domain[1] + 2 * pml), 
+            0.005
+        ]
+
+
+        # Preprocess geometry
+
+        try:
+            with open('{}materials.txt'.format('Obj_'), "w") as file:
+                file.write('#material: {} {} 1 0 box\n'.format(self.box_permittivity, self.box_conductivity))
+            with open('{}materials.txt'.format('Root_'), "w") as file:
+                for i in range(len(self.object_permittivity)):
+                    file.write('#material: {} {} 1 0 Object{}\n'.format(self.object_permittivity[i],self.object_conductivity[i],i))          
+                self.preprocess(self.geofile)
+        except Exception as e:
+            print(e)
+
+        src_position = [src_to_pml + pml + src_to_pml, 
+                        self.square_size - self.air_thickness + self.src_to_box, 
+                        0]
+        rx_position = [src_to_pml + src_to_pml + self.src_to_rx, 
+                       self.square_size - self.air_thickness + self.src_to_box, 
+                       0]        
+        
+        src_steps = [(self.square_size)/ self.num_scan, 0, 0]
+        config = f'''
+
+#title: Roots under Hete Soil Imaging
+
+Configuration
+#domain: {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f}
+#dx_dy_dz: 0.005 0.005 0.005
+#time_window: {self.time_window}
+
+#pml_cells: {pml_cells} {pml_cells} 0 {pml_cells} {pml_cells} 0
+
+Source - Receiver - Waveform
+#waveform: ricker 1 6e8 my_wave
+
+#soil_peplinski: 0.3 0.7 2 2.66 0.01 0.15 hete_soil
+
+#hertzian_dipole: z {src_position[0]:.3f} {src_position[1]:.3f} {src_position[2]:.3f} my_wave 
+#rx: {rx_position[0]:.3f} {rx_position[1]:.3f} {rx_position[2]:.3f}
+#src_steps: {src_steps[0]:.3f} 0 0
+#rx_steps: {src_steps[0]:.3f} 0 0
+
+Geometry objects read
+
+#geometry_objects_read: {pml:.3f} {pml:.3f} {0:.3f} Geometry_ge/geometry_2d.h5 Obj_materials.txt
+#fractal_box: {pml:.3f} {pml:.3f} 0 {domain_2d[0] - pml:.3f} {self.square_size-self.air_thickness+pml:.3f} 0.005 1.5 1 1 1 20 hete_soil my_fractal_box {self.fractal_box_seed}
 #geometry_objects_read: {pml:.3f} {pml:.3f} {0:.3f} Geometry_ge/root_2d.h5 Root_materials.txt
 #geometry_objects_write: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} Roots 
 #geometry_view: 0 0 0 {domain_2d[0]:.3f} {domain_2d[1]:.3f} {domain_2d[2]:.3f} 0.005 0.005 0.005 HeteRoot{self.i} n
@@ -359,14 +382,14 @@ Geometry objects read
                 #gpu=[0],
                 n=1,
                 restart=self.restart,
-                geometry_only=False, geometry_fixed=False)
+                geometry_only=True, geometry_fixed=False)
         except Exception as e:
                 api(self.input, 
                 #n=self.num_scan - self.restart + 1,  
                 #gpu=[0],
                 n=1,
                 restart=self.restart,
-                geometry_only=False, geometry_fixed=False)
+                geometry_only=True, geometry_fixed=False)
         try:
         
             merge_files(str(self.input.replace('.in','')), True)
@@ -437,6 +460,7 @@ if __name__ == "__main__":
     # data = np.load('Geometry_ge/4w_multi_5000_9999.npz', allow_pickle=True)
     data = np.load('Geometry_ge/root_hete_0_200.npz', allow_pickle=True)
     datasetvalue = 0
+    fractal_box_seed = random.randint(0,100)
     args = parser.parse_args()
     for i in range(args.start, args.end):
         i = i - datasetvalue
@@ -447,9 +471,10 @@ if __name__ == "__main__":
         args.box_conductivity = round(data['params'][i]['conductivity_box'], 6)
         args.object_permittivity = [round(p, 3) for p in data['params'][i]['permittivity_object']]
         args.object_conductivity = [round(p, 6) for p in data['params'][i]['conductivity_object']]
+        args.fractal_box_seed = fractal_box_seed
         args.i = i + datasetvalue
     # start  adaptor
         heteImg = HeteSoil_Func(args=args)
         # wallimg.view_geometry()
-        # wallimg.run_base()
+        heteImg.run_base()
         heteImg.run_2D()

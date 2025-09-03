@@ -1,1 +1,1 @@
-#material: 3.76 0.002 1 0 box
+#material: 3.75 0.002 1 0 box
