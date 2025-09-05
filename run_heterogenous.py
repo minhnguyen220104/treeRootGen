@@ -192,10 +192,10 @@ class HeteSoil_Func():
         except Exception as e:
             print(e)
 
-        src_position = [src_to_pml + pml + src_to_pml, 
+        src_position = [src_to_pml + pml, 
                         self.square_size - self.air_thickness + self.src_to_box, 
                         0]
-        rx_position = [src_to_pml + pml + src_to_pml + self.src_to_rx, 
+        rx_position = [src_to_pml + pml + self.src_to_rx, 
                        self.square_size - self.air_thickness + self.src_to_box, 
                        0]        
         
@@ -334,10 +334,10 @@ geometry_objects_read: {pml:.3f} {pml:.3f} {0:.3f} Geometry_ge/root_2d.h5 Root_m
         except Exception as e:
             print(e)
 
-        src_position = [src_to_pml + pml + src_to_pml, 
+        src_position = [src_to_pml + pml, 
                         self.square_size - self.air_thickness + self.src_to_box, 
                         0]
-        rx_position = [src_to_pml + src_to_pml + self.src_to_rx, 
+        rx_position = [src_to_pml + pml + self.src_to_rx, 
                        self.square_size - self.air_thickness + self.src_to_box, 
                        0]        
         
