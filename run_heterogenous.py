@@ -459,13 +459,13 @@ if __name__ == "__main__":
     # data = np.load('Geometry_ge/4w_multi_1000_1999.npz', allow_pickle=True)
     # data = np.load('Geometry_ge/4w_multi_0_4999.npz', allow_pickle=True)
     # data = np.load('Geometry_ge/4w_multi_5000_9999.npz', allow_pickle=True)
-    data = np.load('Geometry_ge/root_hete_0_101.npz', allow_pickle=True)
+    data = np.load('Geometry_ge/root_hete_102_200.npz', allow_pickle=True)
     datasetvalue = 0
     fractal_box_seed = random.randint(0,100)
     args = parser.parse_args()
     for i in range(args.start, args.end):
         i = i - datasetvalue
-        #print(data['params'][i]['square_size'])
+        print(data['params'][i]['square_size'])
         args.square_size = data['params'][i]['square_size']/100
         args.air_thickness = data['params'][i]['air_thickness']/100
         args.box_permittivity = round(data['params'][i]['permittivity_box'], 3)
