@@ -203,11 +203,11 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness,
     # Sector logic
     def sector_bounds_for_i(i):
         if i == 0:
-            sx_lo = col_min
-            sx_hi = min(col_min + 50, col_max - 1)
-        elif i == 1:
             sx_lo = col_min + 50 + min_spacing
             sx_hi = col_max - 50 - min_spacing
+        elif i == 1:
+            sx_lo = col_min
+            sx_hi = min(col_min + 50, col_max - 1)
         else:
             sx_lo = max(col_min, col_max - 50)
             sx_hi = col_max - 1
