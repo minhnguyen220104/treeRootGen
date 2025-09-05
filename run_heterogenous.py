@@ -22,7 +22,7 @@ class HeteSoil_Func():
         self.i = args.i
         self.restart = 1
         # self.num_scan = 20
-        self.num_scan = 60
+        self.num_scan = args.num_scan
         self.fractal_box_seed = args.fractal_box_seed
 
         self.resol = 0.005
@@ -452,6 +452,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Heterogenous Soil Scanning for Through Imaging")      
     parser.add_argument('--start', type=int, default=0, help='Start of the generated geometry')
     parser.add_argument('--end', type=int, default=15, help='End of the generated geometry')
+    parser.add_argument('--num_scan', type=int, default=100, help='Number of A-Scans')
     # data = np.load('SL_Objgeall_0_699.npz', allow_pickle=True)
     # data = np.load('SL_Objgeall_700_1500.npz', allow_pickle=True)
     # data = np.load('Geometry_ge/4w_multi_0_999.npz', allow_pickle=True)
