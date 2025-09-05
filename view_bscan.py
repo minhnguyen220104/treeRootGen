@@ -40,6 +40,6 @@ def view_bscan(raw, output, mode = ['rxs','rx1','Ez']):
     plt.show()
 
 if __name__ == "__main__":
-    raw = './Input_ge/Roots/Roots204_merged.out'
-    output = './Output_ge/Roots204.out'
+    raw = './Input_ge/Roots/Roots1_merged.out'
+    output = './Output_ge/Roots1.out'
     view_bscan(raw = raw , output= output)

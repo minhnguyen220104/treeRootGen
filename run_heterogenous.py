@@ -22,11 +22,11 @@ class HeteSoil_Func():
         self.i = args.i
         self.restart = 1
         # self.num_scan = 20
-        self.num_scan = 95
+        self.num_scan = 60
         self.fractal_box_seed = args.fractal_box_seed
 
         self.resol = 0.005
-        self.time_window = 15e-9
+        self.time_window = 605e-9
         self.square_size = args.square_size
         self.air_thickness = args.air_thickness
         # self.wall_height = args.wall_height
@@ -458,7 +458,7 @@ if __name__ == "__main__":
     # data = np.load('Geometry_ge/4w_multi_1000_1999.npz', allow_pickle=True)
     # data = np.load('Geometry_ge/4w_multi_0_4999.npz', allow_pickle=True)
     # data = np.load('Geometry_ge/4w_multi_5000_9999.npz', allow_pickle=True)
-    data = np.load('Geometry_ge/root_hete_0_200.npz', allow_pickle=True)
+    data = np.load('Geometry_ge/root_hete_0_101.npz', allow_pickle=True)
     datasetvalue = 0
     fractal_box_seed = random.randint(0,100)
     args = parser.parse_args()
@@ -476,5 +476,5 @@ if __name__ == "__main__":
     # start  adaptor
         heteImg = HeteSoil_Func(args=args)
         # wallimg.view_geometry()
-        heteImg.run_base()
+        # heteImg.run_base()
         heteImg.run_2D()

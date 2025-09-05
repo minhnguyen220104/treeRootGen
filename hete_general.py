@@ -113,7 +113,7 @@ import random
 from scipy.ndimage import binary_dilation
 
 def add_shape(i, geometry, square_size, box_start, box_end, air_thickness,
-              shape="circle", objair_gap=25, min_spacing=50, max_tries=400,
+              shape="circle", objair_gap=25, min_spacing=30, max_tries=400,
               fixed_row=True):
     """
     Place one shape into the soil box with:
@@ -145,8 +145,8 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness,
         raise ValueError("Not enough room inside the box after applying objair_gap.")
 
     # Sizes
-    rect_width  = random.randint(20, 30)
-    rect_height = random.randint(20, 30)
+    rect_width  = random.randint(10, 20)
+    rect_height = random.randint(10, 20)
     label = int(i) + 2
 
     # --- Adaptive spacing ---
@@ -287,9 +287,9 @@ if __name__ == '__main__':
     args.n = args.end + 1 - args.start
 
     for i in range(args.n):
-        square_size = 500
+        square_size = 300
         # wall_thickness = random.randint(15, 30)
-        air_thickness = 350
+        air_thickness = 150
 
         # Define wall materials with permittivity and conductivity
         box_materials = {

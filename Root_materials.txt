@@ -1,3 +1,3 @@
-#material: 25.971 0.000659 1 0 Object0
-#material: 24.638 0.000583 1 0 Object1
-#material: 22.098 0.000718 1 0 Object2
+#material: 22.171 0.000722 1 0 Object0
+#material: 21.179 0.000698 1 0 Object1
+#material: 21.81 0.000673 1 0 Object2
