@@ -216,7 +216,7 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness,
     # Sampling functions
     def sample_circle_mask():
         r = min(rect_width, rect_height) // 2
-        cy = random.randint(row_min + r, row_max - 1 - r)
+        cy = random.randint(row_min + r, row_max - 1 - r - 50)
         sx_lo, sx_hi = sector_bounds_for_i(i)
         cx_lo = max(sx_lo + r, col_min + r)
         cx_hi = min(sx_hi - r, col_max - 1 - r)
