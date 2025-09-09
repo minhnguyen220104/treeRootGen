@@ -182,8 +182,8 @@ def add_shape(i, geometry, square_size, box_start, box_end, air_thickness,
         raise ValueError("Not enough room inside the box after applying objair_gap.")
 
     # Shape sizes
-    rect_width  = random.randint(10, 15)
-    rect_height = random.randint(10, 15)
+    rect_width  = random.randint(10, 25)
+    rect_height = random.randint(10, 25)
     label = int(i) + 2
 
     # Adaptive spacing

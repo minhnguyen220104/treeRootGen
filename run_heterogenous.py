@@ -26,7 +26,7 @@ class HeteSoil_Func():
         self.fractal_box_seed = args.fractal_box_seed
 
         self.resol = 0.005
-        self.time_window = 20e-9
+        self.time_window = 60e-9
         self.square_size = args.square_size
         self.air_thickness = args.air_thickness
         # self.wall_height = args.wall_height
@@ -53,7 +53,7 @@ class HeteSoil_Func():
         if not os.path.exists('./Input_ge/ConfinedRoots'):
             os.makedirs('./Input_ge/ConfinedRoots')
         if not os.path.exists('./Input_ge/ConfinedHeteSoil'):
-            os.makedirs('./Input_ge/HeteConfinedHeteSoilSoil')
+            os.makedirs('./Input_ge/ConfinedHeteSoil')
         if not os.path.exists('./Input_ge/Roots'):
             os.makedirs('./Input_ge/Roots')
         if not os.path.exists('./Output_ge'):

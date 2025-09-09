@@ -41,7 +41,7 @@ def direct_couping_subract(raw, bg, output, mode = ['rxs','rx1','Ez']):
     plt.show()
 
 if __name__ == "__main__":
-    raw = './Input_ge/Roots/Roots140_merged.out'
-    bg = './Input_ge/HeteSoil/HeteSoil140_merged.out'
-    output = './Output_ge/Roots/Roots140.out'
+    raw = './Input_ge/ConfinedRoots/ConfinedRoots140_merged.out'
+    bg = './Input_ge/ConfinedHeteSoil/ConfinedHeteSoil140_merged.out'
+    output = './Output_ge/ConfinedRoots/ConfinedRoots140.out'
     direct_couping_subract(raw = raw , bg = bg , output= output)
